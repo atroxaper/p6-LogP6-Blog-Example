@@ -5,6 +5,7 @@ use lib 'lib';
 use Prime;
 
 filter(:name(''), :level($trace), :update);
+writer(:name(''), :pattern('[%date|%level|%trait] %msg'), :update);
 
 my Prime $prime .= new;
 my \log = get-logger('main-prime');

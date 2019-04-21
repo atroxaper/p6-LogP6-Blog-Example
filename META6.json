@@ -2,8 +2,12 @@
     "license": "Artistic-2.0",
     "source-url": "https://bitbucket.org/atroxaper/p6-logp6-blog-example",
     "auth": "github:atroxaper",
-    "depends": ["LogP6"],
+    "depends": [
+        "LogP6",
+        "DBIish"
+    ],
     "provides": {
+        "Prime::DbCache": "lib/Prime/DbCache.pm6",
         "Prime": "lib/Prime.pm6",
         "Prime::Calculator": "lib/Prime/Calculator.pm6"
     },
