@@ -1,0 +1,14 @@
+{
+    "license": "Artistic-2.0",
+    "source-url": "https://bitbucket.org/atroxaper/p6-logp6-blog-example",
+    "auth": "github:atroxaper",
+    "depends": [],
+    "provides": {},
+    "name": "p6-logp6-blog-example",
+    "description": "Example for blog post about LogP6",
+    "resources": [],
+    "perl": "6.d",
+    "test-depends": ["Test"],
+    "build-depends": [],
+    "version": "1.0"
+}
