@@ -2,3 +2,4 @@
 **/.precomp/
 **/*.iml
 resources/*.sqlite
+resources/*.log

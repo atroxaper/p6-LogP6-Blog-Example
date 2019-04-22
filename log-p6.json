@@ -1,0 +1,70 @@
+{
+	"default-wrapper": {
+		"type": "time",
+		"seconds": 5
+	},
+	"default-pattern": "[%date|%level|%trait] %msg",
+	"writers": [
+		{
+			"type": "std",
+			"name": "route",
+			"handle": {
+				"type": "file",
+				"path": "resources/route.log",
+				"out-buffer": 0
+			}
+		},
+		{
+			"type": "std",
+			"name": "prime",
+			"handle": {
+				"type": "file",
+				"path": "resources/prime.log",
+				"out-buffer": 0
+			}
+		},
+		{
+			"type": "std",
+			"name": "calculator",
+			"handle": {
+				"type": "file",
+				"path": "resources/calculator.log",
+				"out-buffer": 0
+			}
+		}
+	],
+	"filters": [
+		{
+			"type": "std",
+			"name": "route",
+			"level": "info"
+		},
+		{
+			"type": "std",
+			"name": "prime",
+			"level": "debug"
+		},
+		{
+			"type": "std",
+			"name": "calculator",
+			"level": "trace"
+		}
+	],
+	"cliches": [
+		{
+			"name": "route",
+			"matcher": "route",
+			"grooves": [ "route", "route" ]
+		},
+		{
+			"name": "prime",
+			"matcher": "/^Prime/",
+			"grooves": [ "prime", "prime" ]
+		},
+		{
+			"name": "calculator",
+			"matcher": "Prime::Calculator",
+			"grooves": [ "calculator", "calculator" ]
+		}
+	]
+}
