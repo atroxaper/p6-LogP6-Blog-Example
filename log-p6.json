@@ -3,7 +3,7 @@
 		"type": "time",
 		"seconds": 5
 	},
-	"default-pattern": "[%date|%level|%trait] %msg",
+	"default-pattern": "[%date|%level|%trait|%mdc{session}] %msg",
 	"writers": [
 		{
 			"type": "std",

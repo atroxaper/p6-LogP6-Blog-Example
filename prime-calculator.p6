@@ -25,9 +25,14 @@ class CroLogger does Cro::Transform {
 	}
 }
 
+sub log-session {
+	log.mdc-put('session', 1000000.rand.Int);
+}
+
 my $application = route {
 	get -> 'is-prime', Int $num {
 		CATCH { default { log.error('check prime number fail.', :x($_)); response.status = 500; } }
+		log-session;
 		log.info("is-prime request for '$num'");
 		my $result = $prime.check-prime($num);
 		log.info("result is $result");
@@ -35,6 +40,7 @@ my $application = route {
 	}
 	get -> 'find-prime', $which {
 		CATCH { default { log.error('find prime number fail.', :x($_)); response.status = 500; } }
+		log-session;
 		log.info("find-prime request for '$which'");
 		my $result = $prime.find-prime($which - 1);
 		log.info("result is $result");
