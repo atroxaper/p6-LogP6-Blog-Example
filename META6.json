@@ -4,7 +4,8 @@
     "auth": "github:atroxaper",
     "depends": [
         "LogP6",
-        "DBIish"
+        "DBIish",
+        "Cro::HTTP"
     ],
     "provides": {
         "Prime::DbCache": "lib/Prime/DbCache.pm6",

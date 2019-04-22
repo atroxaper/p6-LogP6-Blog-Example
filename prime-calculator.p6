@@ -3,23 +3,51 @@
 use LogP6 :configure;
 use lib 'lib';
 use Prime;
+use Cro::HTTP::Router;
+use Cro::HTTP::Server;
+use Cro::Transform;
 
 filter(:name(''), :level($trace), :update);
 writer(:name(''), :pattern('[%date|%level|%trait] %msg'), :update);
 
 my Prime $prime .= new;
-my \log = get-logger('main-prime');
+my \log = get-logger('route');
 
-multi sub MAIN(Int :$is-prime!) {
-	my $result = $prime.check-prime($is-prime);
-	log.info("Number %d is%s prime", $is-prime, ($result ?? '' !! ' not'));
-
-	CATCH { default { log.error('check prime number fail.', :x($_)) } }
+class CroLogger does Cro::Transform {
+	has $.log;
+	method consumes() { Cro::HTTP::Response }
+	method produces() { Cro::HTTP::Response }
+	method transformer(Supply $pipeline --> Supply) {
+		supply {
+			whenever $pipeline -> $resp {
+				my $msg = "{$resp.status} {$resp.request.original-target} - {$resp.request.connection.peer-host}";
+				$resp.status < 400 ?? $!log.info($msg) !! $!log.error($msg);
+				emit $resp;
+			}
+		}
+	}
 }
 
-multi sub MAIN(Int :$find-prime!) {
-	my $result = $prime.find-prime($find-prime - 1);
-	log.info('%d prime number is %d', $find-prime, $result);
-
-	CATCH { default { log.error('find prime number fail.', :x($_)) } }
+my $application = route {
+	get -> 'is-prime', Int $num {
+		CATCH { default { log.error('check prime number fail.', :x($_)); response.status = 500; } }
+		log.info("is-prime request for '$num'");
+		my $result = $prime.check-prime($num);
+		log.info("result is $result");
+		content 'text/plain', ~$result;
+	}
+	get -> 'find-prime', $which {
+		CATCH { default { log.error('find prime number fail.', :x($_)); response.status = 500; } }
+		log.info("find-prime request for '$which'");
+		my $result = $prime.find-prime($which - 1);
+		log.info("result is $result");
+		content 'text/plain', ~$result;
+	}
 }
+my Cro::Service $prime-service = Cro::HTTP::Server.new:
+		:host<localhost>, :port<10000>, :$application,
+		after => [ CroLogger.new(:log(log)) ];
+$prime-service.start;
+log.info('prime service started');
+
+react whenever signal(SIGINT) { $prime-service.stop; exit; }
