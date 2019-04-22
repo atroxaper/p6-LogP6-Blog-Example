@@ -7,8 +7,21 @@ use Cro::HTTP::Router;
 use Cro::HTTP::Server;
 use Cro::Transform;
 
-filter(:name(''), :level($trace), :update);
-writer(:name(''), :pattern('[%date|%level|%trait] %msg'), :update);
+set-default-pattern('[%date][%level{length=5}][%trait] %msg');
+cliche(:name<route>, :matcher<route>, grooves => (
+		writer(:name<route>, :handle($*OUT)),
+		filter(:name<route>, :level($info)))
+);
+
+cliche(:name<prime>, :matcher(/^Prime/), grooves => (
+		writer(:name<prime>, :handle($*OUT)),
+		filter(:name<prime>, :level($debug)))
+);
+
+cliche(:name<calculator>, :matcher<Prime::Calculator>, grooves => (
+		writer(:name<calculator>, :handle($*OUT)),
+		filter(:name<calculator>, :level($trace)))
+);
 
 my Prime $prime .= new;
 my \log = get-logger('route');
