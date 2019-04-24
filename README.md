@@ -1,6 +1,6 @@
 # First look at LogP6
 
-As a Java developer, I do not imagine serious application without writing logs.
+As a Java developer, I can not imagine serious application without writing logs.
 A good logging system should be:
 - fine-tunable. For example, we must be able to write something to a console,
 other things to file or even a database. Of course, there are conditions for
@@ -13,10 +13,10 @@ application logic;
 logging in the library code then then end user must not feel discomfort about
 it.
 
-The idea to write the new logging system bring from think that almost all
-already written logging systems parse a pattern (or layout - string with
-placeholders for log data) each time a user what to write a log or even several
-time per log. Other systems do not provide a possibility to have several loggers
+The idea to write the new logging system originated from a thought that almost all
+already written logging systems parse a pattern (or layout - a string with
+placeholders for log data) each time the user wants to write a log or even several
+times per log. Other systems do not provide a possibility to have several loggers
 in an application. Eventually, I couldn't find a logging module where I can
 apply a patch with all my wishes without rewriting a whole module and lose its
 unique author's idea. Note that LogP6 is not a clone of another library from
@@ -28,11 +28,11 @@ LogP6. You can find source codes of the example on
 
 ## Initial commit. Create prime numbers calculator
 
-For illustration LogP6 basics we will write a web service which can check if a
+To show LogP6 basics we will write a web service which can check if a
 number is prime or not and can return N-st prime number (for example 73 is the
 21st prime number).
 
-Firstly we need the calculator with two methods and test for it of course:
+Firstly we need a calculator with two methods and a test for it, of course:
 
 ```perl6
 # lib/Prime/Calculator.pm6
@@ -102,7 +102,7 @@ is $prime.find-prime(4), 11, 'find 4 prime';
 done-testing;
 ```
 
-As we only start to develop a service we write the MAIN script for now:
+As we are just starting to develop a service we write the MAIN script for now:
 
 ```perl6
 # prime-calculator.p6
@@ -125,19 +125,19 @@ multi sub MAIN(Int :$find-prime!) {
 ```
 
 As you can see, we use `say` routine to output results to the user. But we are
-talking about logging. Let's change `say` to using LogP6.
+talking about logging! Let's change `say` to using LogP6.
 
 ## Add LogP6 using
 
-All that you need to do to start using LogP6 is add `use LogP6;` line in your
-script and `get-logger` with logger `trait`. Logger trait is a string value
-describes the semantic purpose of concrete Logger. In our case, I call it
+All that you need to do to start using LogP6 is to add `use LogP6;` line to your
+script and call `get-logger` with logger's `trait`. Logger trait is a string value
+that describes the semantic purpose of particular Logger. In our case, I called it
 `main-prime`. A logger has usual methods like `trace`, `debug`, `info`, `warn` and
 `error` where you can pass one or more positional arguments. If there are more
-then one argument then the first one will be used as a pattern for `sprintf`
-routine and the rest as `sprintf` arguments. The is optional named argument `:x`
-for passing an exception for logging. If we did not configure any logger then we
-will get default logger which use `$*OUT` for output.
+than one argument, the first one will be used as a pattern for `sprintf`
+routine and the rest as `sprintf` arguments. There is an optional named argument `:x`,
+it can be used for passing an exception for logging. If we did not configure
+any logger then we will get a default logger which use `$*OUT` for output.
 
 ```perl6
 # prime-calculator.p6
@@ -156,11 +156,11 @@ multi sub MAIN(Int :$is-prime!) {
 # ...
 ```
 
-If we run the script `perl6 prime-calculator.p6 --is-prime=73` then we will no
+If we run the script `perl6 prime-calculator.p6 --is-prime=73` then we will see no
 output at all. It is because the default logger level is `error` - all logs with
 importance level below error will be dropped. Let's update default logger filter
 to allow all log levels. We can do it by calling `filter` routine with the
-filter name and desired log level. Default filter has a zero-length string name.
+filter name and a desired log level. Default filter has a zero-length string name.
 Default LogP6 module export contains only `get-logger` routine. For getting
 access to configuration routines you need to `use LogP6 ` with `:configure;`
 tag.
@@ -177,7 +177,7 @@ my Prime $prime .= new;
 # ...
 ```
 
-Now if you run the script `perl6 prime-calculator.p6 --is-prime=73` you will see
+Now, if you run the script `perl6 prime-calculator.p6 --is-prime=73` you will see
 something like `[23:25:20][INFO] Number 73 is prime`. The same way we will add
 logging to the Calculator and Prime classes:
 
@@ -197,11 +197,11 @@ method check-prime(Int:D $num --> Bool:D) {
 }
 ```
 
-We add log as a class field in Calculator and use `$?CLASS.^name` as logger trait.
+We add a Logger as a class attribute in Calculator and use `$?CLASS.^name` as logger trait.
 Using class name as logger trait is a good practice to allow simpler loggers
 configuration. Note that we do not need to configure logger in Calculator class
-and `use` LogP6 module without any tags. The same we can add a logger to Prime
-(for example with `debug` level). After that the script output can look like:
+and are using LogP6 module without tags. In the same way we can add a logger to Prime
+(for example, with `debug` level). After that the script output can look like:
 
 ```bash
 [23:25:20][DEBUG] check prime for 73
@@ -214,10 +214,10 @@ and `use` LogP6 module without any tags. The same we can add a logger to Prime
 If you change `$trace` log level to `$debug` in the MAIN script then you will
 not see logs from Calculator.
 
-## Add database cache for primes
+## Cache primes using a database
 
-Add some logic on our application - add database for caching primes. If a user
-will ask 1000th prime number then we calculate all thousand primes and store it
+Add some logic to our application - add a database for caching primes. If a user
+asks 1000th prime number. then we will calculate all thousand primes and store it in
 the database for future calls:
 
 ```perl6
@@ -282,10 +282,10 @@ done-testing;
 
 Note that we have logging code in the module but it does not prevent testing.
 For now, it is because default log level is error and we do not use it in
-DbCache. But if you want then you will need to `turn off` the default logger. It
+DbCache. But if needed, it is possible to `turn off` the default logger. It
 can be done by the `cliche` routine call:
 `cliche(:name(''), :matcher(/.*/), :replace))`. The meaning of this expression
-will be clear later.
+is explained later.
 
 Integrate DbCache to Prime now:
 
@@ -324,10 +324,10 @@ method find-prime(Int:D $which where * > -1 --> Int:D) {
 }
 ```
 
-You can see that there are four loggers already and it is difficult to
+You can see there are four loggers already and it is difficult to
 understand which logger wrote this or that. Let's add `trait` logger value into
-logger pattern. For that, we can call the `writer` routine and specify the new
-pattern for default logger writer.
+logger pattern. To do it, we call the `writer` routine and specify the new
+pattern for the default logger writer.
 
 ```perl6
 # prime-calculator.p6
@@ -337,7 +337,7 @@ writer(:name(''), :pattern('[%date|%level|%trait] %msg'), :update);
 # ...
 ```
 
-After that our output can be looks like:
+With that our output can look like:
 
 ```bash
 [23:59:51:948|INFO|Prime::DbCache] connecting to ./resources/cache.sqlite
@@ -363,12 +363,12 @@ After that our output can be looks like:
 So far so good. Now we remember that we were going to write a web service. Let's
 do this.
 
-## Implement web service with Cro
+## Implement a web service with Cro
 
-We will use Cro to write an elementary web service. If you did not familiar
-with Cro then you can write about it on the
-[official site](http://cro.services). For inserting LogP6 into cro service I
-wrote `Cro::Transformer` which extracts response information and logs it.
+We will use Cro to write a simple web service. If you are not familiar
+with Cro then you can read about it on the
+[official site](http://cro.services). To add LogP6 into a Cro service I
+wrote a `Cro::Transformer` which extracts the response information and logs it.
 
 ```perl6
 # prime-calculator.p6
@@ -426,27 +426,28 @@ log.info('prime service started');
 react whenever signal(SIGINT) { $prime-service.stop; exit; }
 ```
 
-Good news: you can run the script `perl6 prime-calculator.p6`, make http
-request in your browser `localhost:1000/is-prime/73` and get `True` as the
-response. Bad news: there are so many logs - we need to manage it somehow.
+Good news: you can run the script `perl6 prime-calculator.p6`, make a http
+request from your browser (just visit `localhost:1000/is-prime/73`) and get `True` as
+response. Bad news: there are too many log messages - we need to manage it somehow.
 
 ## Configure several loggers
 
-Let's talk about loggers configuration at all. Firstly, LogP6 distinguish a
-logger and a logger configuration. Each time you call `get-logger('trait')`
-LogP6 find logger configuration (`cliche`) by specified trait and create logger
+Let's talk about configuring loggers in general. Firstly, LogP6 distinguish a
+logger and a logger configuration. Each time you call `get-logger('trait')`,
+LogP6 finds a logger configuration (`cliche`) by specified trait and creates a logger
 from the cliche. Of course, there is a cache and you will get already created
-logger if it exists. Cliche has obligatory parameter `matcher` - string or
+logger if it exists. Cliche has a required parameter `matcher` - a string or a
 regex. The trait must satisfy the cliche's matcher for creating a logger by the
 cliche. Also, a cliche has `grooves` - pairs of writer and filter. Each time you
-want to log something the logger goes through its every groove - checks filter
-and if it passes then use a writer. If there are no grooves then it is
+want to log something, the logger goes through its every groove - checks a filter
+and if it passes, uses paired writer. If there are no grooves, then it is a
 `turned off` logger. We did exactly this - turned off the default logger in the
 comment about tests above.
 
-Now we are going to create three cliche - one for Cro part, one
-for Calculator (it produce so many logs) and one for the rest Prime:: classes.
-So change updating the default writer and filter in prime-calculator.p6 with
+Now, we are going to create three cliches - one for the Cro part, one
+for the Calculator (it produces so many log messages) and one for the rest of
+Prime:: classes.
+So let's change code that updates default writer and filter in prime-calculator.p6 with
 this:
 
 ```perl6
@@ -473,24 +474,25 @@ cliche(:name<calculator>, :matcher<Prime::Calculator>, grooves => (
 We use the same `:name` values for the cliche, writer and filter for clarity.
 You can use any names you want. We use `/^Prime/` regex in `prime` cliche's
 matcher. It will match Prime and Prime::DbCache. It will match Prime::Calculator
-also but Calculator has its own cliche. Not that the order of cliches make
+too, but Calculator has its own cliche. Note that the order of cliches makes
 sense. If you swap `prime` and `calculator` cliche then Calculator will use the
 prime cliche.
 
-One more thing - default pattern. We decide to use the same pattern in all our
-writers. We do not want to write `:pattern('...')` three times and just set
-default value. The value will be used in writes does not have its own pattern.
+One more thing - a default pattern. We decided to use the same pattern in all our
+writers. We do not want to write `:pattern('...')` three times and just set the
+default value. The value that will be used in writes does not have its own pattern.
 
-Good news: we can configure the log level for each logger. Bad news: for change
+Good news: we can configure a log level for each logger. Bad news: for change a
 log level we have to stop the service, change the code and start the service
 again.
 
 ## Move log configuration to configuration file
 
-Fortunately, we can configure logger not only in the code but in the
-configuration file. The configuration file is JSON formatted file `log-p6.json`
-which stored near your script. Also, you can provide a path to configuration
-file by `LOG_P6_JSON` system variable.
+Fortunately, we can configure logger not only in the code, but in the
+configuration file. The configuration file is a JSON formatted file named `log-p6.json`,
+which has to be placed in the same directory of your script.
+You can also provide a path to a configuration file using `LOG_p6_JSON` environment
+variable.
 
 Let's move our three cliches from `prime-calculator.p6` to `log-p6.json`:
 
@@ -522,17 +524,17 @@ Let's move our three cliches from `prime-calculator.p6` to `log-p6.json`:
 }
 ```
 
-As you can see, the format is quite simple. We decide to write cro and prime
+The format is self-descriptive: we decided to write cro and prime
 logs to files and calculator to standard output.
 
-Now we separate using and configuring loggers. It provides us the possibility to
+Now, we separate process of logger usage and configuring it. It provides us the possibility to
 manage loggers without code changes. But actually not in runtime for now :)
 
 The thing we did not describe yet is configuration synchronization. This means
-synchronization between loggers and its configuration. When you change cliche,
-writer or filter or any other things you expect that logger will change its
-behavior. But logger itself is an immutable object. You can `wrap` a logger with
-some `wrapper` to add some functionality to it. In our case synchronisation
+synchronization between loggers and its configuration. When you change a cliche,
+a writer, a filter or any other thing you expect that the logger will change its
+behavior. But the logger itself is an immutable object, so you have to `wrap` a logger with
+a `wrapper` to add some functionality to it. In our case - synchronisation
 functionality. LogP6 has two synchronization wrappers out of the box -
 `time wrapper` (try to sync each X seconds) and `each wrapper` (sync logger each
 log call). Maybe it sounds a little tricky, but... Anyway, for now, we need 
@@ -545,20 +547,19 @@ synchronization - let's wrap all loggers:
 ...
 ```
 
-Now we will get a fresh logger every 5 seconds. Try it. Run the script and play
-with logger levels.
+Now, we will get a fresh logger every 5 seconds. You can try it out,
+running the script and playing with logger levels.
 
-## Log web session information
+## Logging web session information
 
-As we have a web service we can face concurrent users calls. In such case, it
-will be difficult to understand which user 'produce' the concrete log entry.
-We need to identify each user call by session id, for example. After that, we
-must add the session id to each log call. It is not so good decision to add
+As we have a web service, we can face concurrent users calls. In such case, it
+is be difficult to understand which user 'produced' a particular log entry.
+We need to identify each user call by a session id, for example. After that, we
+have to add the session id to each log call. It is not a terribly wise decision to add a
 `session-id` argument to each method and routine in our application just for
-logging purpose. Fortunately, LogP6 provide Mapped Diagnostic Context (or MDC) -
-Thread associated Map structure where you can store any data you want and use it
-during logging. It seems we are going to store session-id in it and correct the
-pattern:
+logging purpose. Fortunately, LogP6 provides us a Mapped Diagnostic Context (or MDC) -
+Thread associated Map structure where you can store any data you want and use
+for logging. So we are going to store a session-id with it and correct the pattern:
 
 ```perl6
 # prime-calculator.p6
@@ -582,7 +583,7 @@ my $application = route {
 ...
 ```
 
-After that each log entry signed by session id:
+With that, each log entry is signed by a session id:
 
 ```bash
 # resources/route.log
@@ -607,9 +608,9 @@ After that each log entry signed by session id:
 ## Conclusions
 
 That was a brief introduction to LogP6. There are many things not covered in
-this article which LogP6 provides. For example, fully customizable filtering -
-you can describe any filtering logic, even random filtering :) Also you can
-modify any data (log level, log message or so) during filter stage. Writers are
+the article which LogP6 provides. For example, fully customizable filtering -
+you can describe any filtering logic, including random filtering :) Other than that you can
+modify any data (log level, log message or so) at filter stage. Writers are
 customizable too - you can create your own writer with your own logic. For
 example, there is
 [LogP6::Writer::Journald](https://modules.perl6.org/dist/LogP6-Writer-Journald:cpan:ATROXAPER)
